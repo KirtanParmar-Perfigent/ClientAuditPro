@@ -1,0 +1,147 @@
+<div class="grid">
+	<p-panel header="Company Table">
+		<ng-template pTemplate="icons">
+			<div class="flex">
+				<button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
+				<button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button>
+			</div>
+		</ng-template>
+			<div class="card">
+				<p-table #dt1 
+				[value]="company" 
+				dataKey="id" 
+				[rows]="5" 
+				[rowHover]="true"
+				[paginator]="true"
+				[globalFilterFields]="['id','name', 'email', 'address', 'contact', 'country']" 
+				responsiveLayout="scroll"
+				[showCurrentPageReport]="true"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+				selectionMode="single"
+				[(selection)]="selected">
+
+				<ng-template pTemplate="caption">
+					<div class="flex justify-content-between flex-column sm:flex-row">
+						<span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text"
+								(input)="dt1.filterGlobal($any($event.target).value, 'contains')" class="w-full"
+								placeholder="Search Here" />
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Id
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Name
+							</div>
+						</th>
+                        <th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Email
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Address
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								ContactNo
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Country
+							</div>
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-company>
+					<tr [pSelectableRow]="company">
+						<td>
+							{{company.id}}
+						</td>
+						<td>
+							{{company.name}}
+						</td>
+                        <td>
+                            {{company.email}}
+                        </td>
+						<td>
+							{{company.address}}
+						</td>
+						<td>
+							{{company.contact}}
+						</td>
+						<td>
+							{{company.country}}
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<p-dialog [(visible)]="companyDialog" [style]="{width: '450px'}" header="Company Details" [modal]="true" class="p-fluid">
+				<form [formGroup]="companyform" (ngSubmit)="saveData()">
+					<div class="field">
+						<h6>CompanyName</h6>
+						<input type="text" pInputText
+						id="name" required autofocus name="companyName" formControlName="companyName" class="form-control" [ngClass]="{'is-invalid' : companyform.get('companyName')?.invalid && companyform.get('companyName')?.touched}"/>
+						<div *ngIf="companyform.get('companyName')?.invalid && companyform.get('companyName')?.touched" class="invalid-feedback">
+							CompanyName is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>Email</h6>
+						<input type="text" pInputText
+						id="email" required autofocus name="email" formControlName="email" class="form-control" [ngClass]="{'is-invalid' : companyform.get('email')?.invalid && companyform.get('email')?.touched}"/>
+						<div *ngIf="companyform.get('email')?.invalid && companyform.get('email')?.touched" class="invalid-feedback">
+							Email is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>Address</h6>
+						<input type="text" pInputText
+						id="address" required autofocus name="address" formControlName="address" class="form-control" [ngClass]="{'is-invalid' : companyform.get('address')?.invalid && companyform.get('address')?.touched}"/>
+						<div *ngIf="companyform.get('address')?.invalid && companyform.get('address')?.touched" class="invalid-feedback">
+							Address is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>ContactNo</h6>
+						<input type="text" pInputText
+						id="contactNo" required autofocus name="contactNo" formControlName="contactNo" class="form-control" [ngClass]="{'is-invalid' : companyform.get('contactNo')?.invalid && companyform.get('contactNo')?.touched}"/>
+						<div *ngIf="companyform.get('contactNo')?.invalid && companyform.get('contactNo')?.touched" class="invalid-feedback">
+							ContactNo is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>Country</h6>
+						<input type="text" pInputText
+						id="country" required autofocus name="country" formControlName="country" class="form-control" [ngClass]="{'is-invalid' : companyform.get('country')?.invalid && companyform.get('country')?.touched}"/>
+						<div *ngIf="companyform.get('country')?.invalid && companyform.get('country')?.touched" class="invalid-feedback">
+							ContactNo is required
+						</div>
+					</div>
+
+					<div>
+						<button pButton pRipple type="submit" label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+						<button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+					</div>
+				</form>
+			</p-dialog>
+		</div>
+	</p-panel>
+</div>

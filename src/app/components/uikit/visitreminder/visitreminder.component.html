@@ -1,0 +1,105 @@
+<div class="grid">
+	<p-panel header="Location Table">
+		<ng-template pTemplate="icons">
+			<div class="flex">
+				<button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
+				<button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button>
+			</div>
+		</ng-template>
+			<div class="card">
+				<p-table #dt1 
+				[value]="visitreminder" 
+				dataKey="id" 
+				[rows]="5" 
+				[rowHover]="true"
+				[paginator]="true"
+				[globalFilterFields]="['id','user_id', 'customer_id']" 
+				responsiveLayout="scroll"
+				[showCurrentPageReport]="true"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+				selectionMode="single"
+				[(selection)]="selected">
+
+				<ng-template pTemplate="caption">
+					<div class="flex justify-content-between flex-column sm:flex-row">
+						<span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text"
+								(input)="dt1.filterGlobal($any($event.target).value, 'contains')" class="w-full"
+								placeholder="Search Here" />
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Id
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								UserName
+							</div>
+						</th>
+                        <th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								CustomerName
+							</div>
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-visitreminder>
+					<tr [pSelectableRow]="visitreminder">
+						<td>
+							{{visitreminder.id}}
+						</td>
+						<td>
+							{{visitreminder.user_id}}
+						</td>
+                        <td>
+                            {{visitreminder.customer_id}}
+                        </td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<p-dialog [(visible)]="visitreminderDialog" [style]="{width: '450px'}" header="Company Details" [modal]="true" class="p-fluid">
+				<form [formGroup]="visitreminderform" (ngSubmit)="saveData()">
+					<div class="field">
+						<h6>CustomerName</h6>
+						<input type="text" pInputText
+						id="name" required autofocus name="CustomerId" formControlName="CustomerId" class="form-control" [ngClass]="{'is-invalid' : visitreminderform.get('CustomerId')?.invalid && visitreminderform.get('CustomerId')?.touched}"/>
+						<div *ngIf="visitreminderform.get('CustomerId')?.invalid && visitreminderform.get('CustomerId')?.touched" class="invalid-feedback">
+							CustomerName is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>UserName</h6>
+						<input type="text" pInputText
+						id="UserId" required autofocus name="UserId" formControlName="UserId" class="form-control" [ngClass]="{'is-invalid' : visitreminderform.get('UserId')?.invalid && visitreminderform.get('UserId')?.touched}"/>
+						<div *ngIf="visitreminderform.get('UserId')?.invalid && visitreminderform.get('UserId')?.touched" class="invalid-feedback">
+							UserName is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>Reminder</h6>
+						<input type="date" pInputText
+						id="Reminder" required autofocus name="Reminder" formControlName="Reminder" class="form-control" [ngClass]="{'is-invalid' : visitreminderform.get('Reminder')?.invalid && visitreminderform.get('Reminder')?.touched}"/>
+						<div *ngIf="visitreminderform.get('Reminder')?.invalid && visitreminderform.get('Reminder')?.touched" class="invalid-feedback">
+							Reminder is required
+						</div>
+					</div>
+
+					<div>
+						<button pButton pRipple type="submit" label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+						<button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+					</div>
+				</form>
+			</p-dialog>
+		</div>
+	</p-panel>
+</div>

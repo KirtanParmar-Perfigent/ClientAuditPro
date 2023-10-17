@@ -1,0 +1,79 @@
+<div class="grid">
+	<p-panel header="Role Table">
+		<ng-template pTemplate="icons">
+			<div class="flex">
+				<button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
+				<button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button>
+			</div>
+		</ng-template>
+			<div class="card">
+				<p-table #dt1 
+				[value]="role" 
+				dataKey="id" 
+				[rows]="5" 
+				[rowHover]="true"
+				[paginator]="true"
+				[globalFilterFields]="['id', 'type']" 
+				responsiveLayout="scroll"
+				[showCurrentPageReport]="true"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+				selectionMode="single"
+				[(selection)]="selected">
+
+				<ng-template pTemplate="caption">
+					<div class="flex justify-content-between flex-column sm:flex-row">
+						<span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text"
+								(input)="dt1.filterGlobal($any($event.target).value, 'contains')" class="w-full"
+								placeholder="Search Here" />
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Id
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								type
+							</div>
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-role>
+					<tr [pSelectableRow]="role">
+						<td>
+							{{role.id}}
+						</td>
+						<td>
+							{{role.type}}
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<p-dialog [(visible)]="roleDialog" [style]="{width: '450px'}" header="Company Details" [modal]="true" class="p-fluid">
+				<form [formGroup]="roleform" (ngSubmit)="saveData()">
+					<div class="field">
+						<h6>Type</h6>
+						<input type="text" pInputText
+						id="Type" required autofocus name="Type" formControlName="Type" class="form-control" [ngClass]="{'is-invalid' : roleform.get('Type')?.invalid && roleform.get('Type')?.touched}"/>
+						<div *ngIf="roleform.get('Type')?.invalid && roleform.get('Type')?.touched" class="invalid-feedback">
+							Type is required
+						</div>
+					</div>
+
+					<div>
+						<button pButton pRipple type="submit" label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+						<button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+					</div>
+				</form>
+			</p-dialog>
+		</div>
+	</p-panel>
+</div>

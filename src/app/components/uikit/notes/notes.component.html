@@ -1,0 +1,113 @@
+<div class="grid">
+	<p-panel header="Notes Table">
+		<ng-template pTemplate="icons">
+			<div class="flex">
+				<button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
+				<button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button>
+			</div>
+		</ng-template>
+			<div class="card">
+				<p-table #dt1 
+				[value]="notes" 
+				dataKey="id" 
+				[rows]="5" 
+				[rowHover]="true"
+				[paginator]="true"
+				[globalFilterFields]="['id','description', 'user_id', 'customer_id']" 
+				responsiveLayout="scroll"
+				[showCurrentPageReport]="true"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+				selectionMode="single"
+				[(selection)]="selected">
+
+				<ng-template pTemplate="caption">
+					<div class="flex justify-content-between flex-column sm:flex-row">
+						<span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text"
+								(input)="dt1.filterGlobal($any($event.target).value, 'contains')" class="w-full"
+								placeholder="Search Here" />
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Id
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Description
+							</div>
+						</th>
+                        <th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								UserName
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								CustomerName
+							</div>
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-notes>
+					<tr [pSelectableRow]="notes">
+						<td>
+							{{notes.id}}
+						</td>
+						<td>
+							{{notes.description}}
+						</td>
+                        <td>
+                            {{notes.user_id}}
+                        </td>
+						<td>
+							{{notes.customer_id}}
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<p-dialog [(visible)]="notesDialog" [style]="{width: '450px'}" header="Company Details" [modal]="true" class="p-fluid">
+				<form [formGroup]="notesform" (ngSubmit)="saveData()">
+					<div class="field">
+						<h6>Description</h6>
+						<input type="text" pInputText
+						id="Description" required autofocus name="Description" formControlName="Description" class="form-control" [ngClass]="{'is-invalid' : notesform.get('Description')?.invalid && notesform.get('Description')?.touched}"/>
+						<div *ngIf="notesform.get('Description')?.invalid && notesform.get('Description')?.touched" class="invalid-feedback">
+							Description is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>UserId</h6>
+						<input type="text" pInputText
+						id="UserId" required autofocus name="UserId" formControlName="UserId" class="form-control" [ngClass]="{'is-invalid' : notesform.get('UserId')?.invalid && notesform.get('UserId')?.touched}"/>
+						<div *ngIf="notesform.get('UserId')?.invalid && notesform.get('UserId')?.touched" class="invalid-feedback">
+							UserId is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>CustomerId</h6>
+						<input type="text" pInputText
+						id="CustomerId" required autofocus name="CustomerId" formControlName="CustomerId" class="form-control" [ngClass]="{'is-invalid' : notesform.get('CustomerId')?.invalid && notesform.get('CustomerId')?.touched}"/>
+						<div *ngIf="notesform.get('CustomerId')?.invalid && notesform.get('CustomerId')?.touched" class="invalid-feedback">
+							CustomerId is required
+						</div>
+					</div>
+
+					<div>
+						<button pButton pRipple type="submit" label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+						<button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+					</div>
+				</form>
+			</p-dialog>
+		</div>
+	</p-panel>
+</div>

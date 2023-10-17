@@ -1,0 +1,179 @@
+<div class="grid">
+	<p-panel header="User Table">
+		<ng-template pTemplate="icons">
+			<div class="flex">
+				<button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
+				<button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button>
+			</div>
+		</ng-template>
+			<div class="card">
+				<p-table #dt1 
+				[value]="users" 
+				dataKey="id" 
+				[rows]="5" 
+				[rowHover]="true"
+				[paginator]="true"
+				[globalFilterFields]="['id','name', 'email', 'address', 'contact', 'address', 'dob', 'gender']" 
+				responsiveLayout="scroll"
+				[showCurrentPageReport]="true"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+				selectionMode="single"
+				[(selection)]="selected">
+
+				<ng-template pTemplate="caption">
+					<div class="flex justify-content-between flex-column sm:flex-row">
+						<span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text"
+								(input)="dt1.filterGlobal($any($event.target).value, 'contains')" class="w-full"
+								placeholder="Search Here" />
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Id
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								FullName
+							</div>
+						</th>
+                        <th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								ContactNo
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Email
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								DOB
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Address
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Gender
+							</div>
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-users>
+					<tr [pSelectableRow]="users">
+						<td>
+							{{users.id}}
+						</td>
+						<td>
+							{{users.fullname}}
+						</td>
+						<td>
+							{{users.contact_No}}
+						</td>
+                        <td>
+                            {{users.email}}
+                        </td>
+                        <td>
+                            {{users.dob}}
+                        </td>
+						<td>
+							{{users.address}}
+						</td>
+						<td>
+							{{users.gender}}
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+
+			<p-dialog [(visible)]="usersDialog" [style]="{width: '450px'}" header="Users Details" [modal]="true" class="p-fluid">
+				<form [formGroup]="usersform" (ngSubmit)="saveData()">
+					<div class="field">
+						<h6>FirstName</h6>
+						<input type="text" pInputText
+						id="name" required autofocus name="FirstName" formControlName="FirstName" class="form-control" [ngClass]="{'is-invalid' : usersform.get('FirstName')?.invalid && usersform.get('FirstName')?.touched}"/>
+						<div *ngIf="usersform.get('FirstName')?.invalid && usersform.get('FirstName')?.touched" class="invalid-feedback">
+							FirstName is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>LastName</h6>
+						<input type="text" pInputText
+						id="LastName" required autofocus name="LastName" formControlName="LastName" class="form-control" [ngClass]="{'is-invalid' : usersform.get('LastName')?.invalid && usersform.get('LastName')?.touched}"/>
+						<div *ngIf="usersform.get('LastName')?.invalid && usersform.get('LastName')?.touched" class="invalid-feedback">
+							LastName is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>UserName</h6>
+						<input type="text" pInputText
+						id="UserName" required autofocus name="UserName" formControlName="UserName" class="form-control" [ngClass]="{'is-invalid' : usersform.get('UserName')?.invalid && usersform.get('UserName')?.touched}"/>
+						<div *ngIf="usersform.get('UserName')?.invalid && usersform.get('UserName')?.touched" class="invalid-feedback">
+							UserName is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>ContactNo</h6>
+						<input type="text" pInputText
+						id="contactNo" required autofocus name="contactNo" formControlName="contactNo" class="form-control" [ngClass]="{'is-invalid' : usersform.get('contactNo')?.invalid && usersform.get('contactNo')?.touched}"/>
+						<div *ngIf="usersform.get('contactNo')?.invalid && usersform.get('contactNo')?.touched" class="invalid-feedback">
+							ContactNo is required
+						</div>
+					</div>
+
+					<div class="field">
+						<h6>Email</h6>
+						<input type="text" pInputText
+						id="Email" required autofocus name="Email" formControlName="Email" class="form-control" [ngClass]="{'is-invalid' : usersform.get('Email')?.invalid && usersform.get('Email')?.touched}"/>
+						<div *ngIf="usersform.get('Email')?.invalid && usersform.get('Email')?.touched" class="invalid-feedback">
+							Email is required
+						</div>
+					</div>
+					<div class="field">
+						<h6>DOB</h6>
+						<input type="text" pInputText
+						id="DOB" required autofocus name="DOB" formControlName="DOB" class="form-control" [ngClass]="{'is-invalid' : usersform.get('DOB')?.invalid && usersform.get('DOB')?.touched}"/>
+						<div *ngIf="usersform.get('DOB')?.invalid && usersform.get('DOB')?.touched" class="invalid-feedback">
+							DOB is required
+						</div>
+					</div>
+					<div class="field">
+						<h6>Address</h6>
+						<input type="text" pInputText
+						id="Address" required autofocus name="Address" formControlName="Address" class="form-control" [ngClass]="{'is-invalid' : usersform.get('Address')?.invalid && usersform.get('Address')?.touched}"/>
+						<div *ngIf="usersform.get('Address')?.invalid && usersform.get('Address')?.touched" class="invalid-feedback">
+							Address is required
+						</div>
+					</div>
+					<div class="field">
+						<h6>Gender</h6>
+						<input type="text" pInputText
+						id="Gender" required autofocus name="Gender" formControlName="Gender" class="form-control" [ngClass]="{'is-invalid' : usersform.get('Gender')?.invalid && usersform.get('Gender')?.touched}"/>
+						<div *ngIf="usersform.get('Gender')?.invalid && usersform.get('Gender')?.touched" class="invalid-feedback">
+							Gender is required
+						</div>
+					</div>
+
+					<div>
+						<button pButton pRipple type="submit" label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+						<button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+					</div>
+				</form>
+			</p-dialog>
+		</div>
+	</p-panel>
+</div>
