@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IPasscodeClient, PasscodeDetailsModel } from 'src/app/ClientApi';
+import { IPasscodeClient, PasscodeModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class PasscodeComponent implements OnInit {
 
-  passcode! : PasscodeDetailsModel[];
+  passcode! : PasscodeModel[];
 
   passcodeDialog : boolean = false;
 
@@ -21,7 +21,7 @@ export class PasscodeComponent implements OnInit {
   constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
 
   ngOnInit(): void {
-      this.apiClient.Passcode.getAll().then((result) => {
+      this.apiClient.Passcode.getAllDetail().then((result) => {
         console.log("Data",result)
         this.passcode = result
       });

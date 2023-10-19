@@ -14,7 +14,7 @@
 				[rows]="5" 
 				[rowHover]="true"
 				[paginator]="true"
-				[globalFilterFields]="['id', 'user_id', 'role_id']" 
+				[globalFilterFields]="['id', 'userFullName', 'role']" 
 				[showCurrentPageReport]="true"
 				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
 				selectionMode="single"
@@ -39,12 +39,12 @@
 						</th>
 						<th style="min-width: 12rem">
 							<div class="flex justify-content-between align-items-center">
-								UserId
+								UserName
 							</div>
 						</th>
 						<th style="min-width: 12rem">
 							<div class="flex justify-content-between align-items-center">
-								RoleId
+								Role
 							</div>
 						</th>
 					</tr>
@@ -55,10 +55,10 @@
 							{{userrole.id}}
 						</td>
 						<td>
-							{{userrole.user_id}}
+							{{userrole.userFullName}}
 						</td>
                         <td>
-                            {{userrole.role_id}}
+                            {{userrole.role}}
                         </td>
 					</tr>
 				</ng-template>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IUserRoleClient, UserRoleDetailsModel } from 'src/app/ClientApi';
+import { IUserRoleClient, UserRoleModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class UserroleComponent implements OnInit {
 
-  userrole! : UserRoleDetailsModel[];
+  userrole! : UserRoleModel[];
 
   userroleDialog : boolean = false;
 
@@ -21,13 +21,13 @@ export class UserroleComponent implements OnInit {
   constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
 
   ngOnInit(): void {
-      this.apiClient.UserRole.getAll().then((result) => {
+      this.apiClient.UserRole.getAllDetail().then((result) => {
         console.log("Data",result)
         this.userrole = result
       });
 
       this.apiClient.Role.getAll().then((result) =>{
-        
+        console.log("role data-->", result);
       })
     // this.userroleform = this.fb.group({
     //   companyName : ['',Validators.required],

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiClient } from 'src/app/ApiClient';
-import { CompanyCategoryDetailsModel, ICompanyCategoryClient } from 'src/app/ClientApi';
+import { CompanyCategoryModel, ICompanyCategoryClient } from 'src/app/ClientApi';
 
 @Component({
   selector: 'app-companycategory',
@@ -10,7 +10,7 @@ import { CompanyCategoryDetailsModel, ICompanyCategoryClient } from 'src/app/Cli
 })
 export class CompanycategoryComponent implements OnInit {
 
-  companycategory : CompanyCategoryDetailsModel[] = [];
+  companycategory : CompanyCategoryModel[] = [];
 
   companycategoryDialog : boolean = false;
 
@@ -22,7 +22,7 @@ export class CompanycategoryComponent implements OnInit {
 
   ngOnInit(): void {
     debugger
-    this.apiClient.CompanyCategory.getAll().then((result) => {
+    this.apiClient.CompanyCategory.getAllDetail().then((result) => {
       console.log("Data",result)
       this.companycategory = result
       });

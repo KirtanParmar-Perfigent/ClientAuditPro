@@ -14,7 +14,7 @@
 				[rows]="5" 
 				[rowHover]="true"
 				[paginator]="true"
-				[globalFilterFields]="['id','company_id', 'category_id', 'price']" 
+				[globalFilterFields]="['id','company', 'category', 'price']" 
 				responsiveLayout="scroll"
 				[showCurrentPageReport]="true"
 				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -61,10 +61,10 @@
 							{{companycategory.id}}
 						</td>
 						<td>
-							{{companycategory.company_id}}
-						</td>
+                            {{companycategory.company}}
+                        </td>
                         <td>
-                            {{companycategory.category_id}}
+                            {{companycategory.category}}
                         </td>
 						<td>
 							{{companycategory.price}}

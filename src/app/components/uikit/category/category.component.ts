@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiClient } from 'src/app/ApiClient';
-import { CategoryDetailsModel, ICategoryClient } from 'src/app/ClientApi';
+import { CategoryModel, ICategoryClient } from 'src/app/ClientApi';
 
 @Component({
   selector: 'app-category',
@@ -10,7 +10,7 @@ import { CategoryDetailsModel, ICategoryClient } from 'src/app/ClientApi';
 })
 export class CategoryComponent implements OnInit {
 
-  category : CategoryDetailsModel[] = [];
+  category : CategoryModel[] = [];
 
   categoryDialog : boolean = false;
 
@@ -21,7 +21,7 @@ export class CategoryComponent implements OnInit {
   constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
 
   ngOnInit(): void {
-      this.apiClient.Category.getAll().then((result) => {
+      this.apiClient.Category.getAllDetail().then((result) => {
         console.log("Data",result)
         this.category = result
       });

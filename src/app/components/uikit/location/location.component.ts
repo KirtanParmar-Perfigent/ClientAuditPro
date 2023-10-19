@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ILocationClient, LocationDetailsModel } from 'src/app/ClientApi';
+import { ILocationClient, LocationModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class LocationComponent implements OnInit {
 
-  location : LocationDetailsModel[] = [];
+  location : LocationModel[] = [];
 
   locationDialog : boolean = false;
 
@@ -22,7 +22,7 @@ export class LocationComponent implements OnInit {
 
   ngOnInit(): void {
     debugger
-    this.apiClient.Location.getAll().then((result) => {
+    this.apiClient.Location.getAllDetail().then((result) => {
       console.log("Data",result)
       this.location = result
       });

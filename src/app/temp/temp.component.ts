@@ -9,11 +9,11 @@ import { ApiClient } from '../ApiClient';
 export class TempComponent {
   constructor(private apiClient: ApiClient) {}
 
-  btnclick()
-  {
-    this.apiClient.VisitReminder.getAll().then((result) => {
-      console.log('this.result--->', JSON.stringify(result)); 
-    });
-  }
+  // btnclick()
+  // {
+  //   this.apiClient.VisitReminder.getAllDetail().then((result) => {
+  //     console.log('this.result--->', JSON.stringify(result)); 
+  //   });
+  // }
 }
 

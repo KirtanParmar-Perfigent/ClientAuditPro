@@ -14,7 +14,7 @@
 				[rows]="5" 
 				[rowHover]="true"
 				[paginator]="true"
-				[globalFilterFields]="['id','name', 'email', 'address', 'contact', 'address', 'dob', 'gender']" 
+				[globalFilterFields]="['id','fullname', 'contact_No', 'email', 'address', 'gender', 'dob']" 
 				responsiveLayout="scroll"
 				[showCurrentPageReport]="true"
 				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -55,17 +55,17 @@
 						</th>
 						<th style="min-width: 12rem">
 							<div class="flex justify-content-between align-items-center">
-								DOB
-							</div>
-						</th>
-						<th style="min-width: 12rem">
-							<div class="flex justify-content-between align-items-center">
 								Address
 							</div>
 						</th>
 						<th style="min-width: 12rem">
 							<div class="flex justify-content-between align-items-center">
 								Gender
+							</div>
+						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								DOB
 							</div>
 						</th>
 					</tr>
@@ -84,15 +84,15 @@
                         <td>
                             {{users.email}}
                         </td>
-                        <td>
-                            {{users.dob}}
-                        </td>
 						<td>
 							{{users.address}}
 						</td>
 						<td>
 							{{users.gender}}
 						</td>
+						<td>
+                            {{users.dob}}
+                        </td>
 					</tr>
 				</ng-template>
 			</p-table>

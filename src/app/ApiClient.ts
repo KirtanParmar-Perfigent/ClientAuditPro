@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { VisitReminderClient, UserClient, DBClient,UsersClient,CategoryClient,CompanyCategoryClient,CompanyClient,CustomerClient,LocationClient,NotesClient,PasscodeClient,RoleClient, UserRoleClient } from '../app/ClientApi';
+import { VisitReminderClient, UserClient, DBClient,UsersClient,CategoryClient,CompanyCategoryClient,CompanyClient,CustomerClient,LocationClient,NotesClient,PasscodeClient,RoleClient, UserRoleClient } from './ClientApi';
 
 @Injectable({
   providedIn: 'root',

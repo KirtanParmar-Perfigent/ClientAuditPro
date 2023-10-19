@@ -14,7 +14,7 @@
 				[rows]="5" 
 				[rowHover]="true"
 				[paginator]="true"
-				[globalFilterFields]="['user_id','customer_id', 'longitude', 'lattitude']" 
+				[globalFilterFields]="['id', 'userFullName','customerFullName', 'longitude', 'lattitude']" 
 				responsiveLayout="scroll"
 				[showCurrentPageReport]="true"
 				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -66,10 +66,10 @@
 							{{location.id}}
 						</td>
 						<td>
-							{{location.user_id}}
+							{{location.userFullName}}
 						</td>
                         <td>
-                            {{location.customer_id}}
+                            {{location.customerFullName}}
                         </td>
 						<td>
 							{{location.longitude}}

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IUsersClient, UsersDetailsModel } from 'src/app/ClientApi';
+import { IUsersClient, UsersModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class UsersComponent implements OnInit {
 
-  users! : UsersDetailsModel[];
+  users! : UsersModel[];
 
   usersDialog : boolean = false;
 
@@ -21,7 +21,7 @@ export class UsersComponent implements OnInit {
   constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
 
   ngOnInit(): void {
-      this.apiClient.Users.getAll().then((result) => {
+      this.apiClient.Users.getAllDetail().then((result) => {
         console.log("Data",result)
         this.users = result
       });

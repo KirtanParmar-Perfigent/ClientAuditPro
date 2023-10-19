@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CompanyDetailsModel, ICompanyClient } from 'src/app/ClientApi';
+import { CompanyModel, ICompanyClient } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 import { MessageService } from 'primeng/api';
 
@@ -12,7 +12,7 @@ import { MessageService } from 'primeng/api';
 })
 export class CompanyComponent implements OnInit {
 
-  company! : CompanyDetailsModel[];
+  company! : CompanyModel[];
 
   companyDialog : boolean = false;
 
@@ -23,7 +23,7 @@ export class CompanyComponent implements OnInit {
   constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
 
   ngOnInit(): void {
-      this.apiClient.Company.getAll().then((result) => {
+      this.apiClient.Company.getAllDetail().then((result) => {
         console.log("Data",result)
         this.company = result
       });

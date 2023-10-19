@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IVisitReminderClient, VisitReminderDetailsModel } from 'src/app/ClientApi';
+import { IVisitReminderClient, VisitReminderModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class VisitreminderComponent implements OnInit {
 
-  visitreminder : VisitReminderDetailsModel[] = [];
+  visitreminder : VisitReminderModel[] = [];
 
   visitreminderDialog : boolean = false;
 
@@ -22,7 +22,7 @@ export class VisitreminderComponent implements OnInit {
 
   ngOnInit(): void {
     debugger
-    this.apiClient.VisitReminder.getAll().then((result) => {
+    this.apiClient.VisitReminder.getAllDetail().then((result) => {
       console.log("Data",result)
       this.visitreminder = result
       });

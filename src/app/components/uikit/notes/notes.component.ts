@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { INotesClient, NotesDetailsModel } from 'src/app/ClientApi';
+import { INotesClient, NotesModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class NotesComponent implements OnInit {
 
-  notes! : NotesDetailsModel[];
+  notes! : NotesModel[];
 
   notesDialog : boolean = false;
 
@@ -21,7 +21,7 @@ export class NotesComponent implements OnInit {
   constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
 
   ngOnInit(): void {
-      this.apiClient.Notes.getAll().then((result) => {
+      this.apiClient.Notes.getAllDetail().then((result) => {
         console.log("Data",result)
         this.notes = result
       });

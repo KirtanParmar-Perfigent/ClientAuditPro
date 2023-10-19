@@ -1,8 +1,10 @@
 export interface IVisitReminderClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderDetailsModel[]>;
+    getAllDetail(): Promise<VisitReminderView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderModel[]>;
 
     getTotalCount(): Promise<number>;
 
@@ -27,7 +29,7 @@ export class VisitReminderClient implements IVisitReminderClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderModel[]> {
         let url_ = this.baseUrl + "/api/VisitReminder/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -47,7 +49,7 @@ export class VisitReminderClient implements IVisitReminderClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<VisitReminderDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<VisitReminderModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -57,7 +59,7 @@ export class VisitReminderClient implements IVisitReminderClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(VisitReminderDetailsModel.fromJS(item));
+                    result200!.push(VisitReminderModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -69,10 +71,51 @@ export class VisitReminderClient implements IVisitReminderClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<VisitReminderDetailsModel[]>(null as any);
+        return Promise.resolve<VisitReminderModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderDetailsModel[]> {
+    getAllDetail(): Promise<VisitReminderView[]> {
+        let url_ = this.baseUrl + "/api/VisitReminder/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<VisitReminderView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(VisitReminderView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<VisitReminderView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<VisitReminderModel[]> {
         let url_ = this.baseUrl + "/api/VisitReminder/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -96,7 +139,7 @@ export class VisitReminderClient implements IVisitReminderClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<VisitReminderDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<VisitReminderModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -106,7 +149,7 @@ export class VisitReminderClient implements IVisitReminderClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(VisitReminderDetailsModel.fromJS(item));
+                    result200!.push(VisitReminderModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -118,7 +161,7 @@ export class VisitReminderClient implements IVisitReminderClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<VisitReminderDetailsModel[]>(null as any);
+        return Promise.resolve<VisitReminderModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -369,15 +412,17 @@ export class VisitReminderClient implements IVisitReminderClient {
 
 export interface ICategoryClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryDetailsModel[]>;
+    getAllDetail(): Promise<CategoryView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<CategoryDetailsModel>;
+    get(id?: number | undefined): Promise<CategoryModel>;
 
     getHistoryTotalCount(id?: number | undefined): Promise<number>;
 
@@ -394,7 +439,7 @@ export class CategoryClient implements ICategoryClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryModel[]> {
         let url_ = this.baseUrl + "/api/Category/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -414,7 +459,7 @@ export class CategoryClient implements ICategoryClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<CategoryDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<CategoryModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -424,7 +469,7 @@ export class CategoryClient implements ICategoryClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CategoryDetailsModel.fromJS(item));
+                    result200!.push(CategoryModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -436,10 +481,51 @@ export class CategoryClient implements ICategoryClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CategoryDetailsModel[]>(null as any);
+        return Promise.resolve<CategoryModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryDetailsModel[]> {
+    getAllDetail(): Promise<CategoryView[]> {
+        let url_ = this.baseUrl + "/api/Category/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<CategoryView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CategoryView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CategoryView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CategoryModel[]> {
         let url_ = this.baseUrl + "/api/Category/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -463,7 +549,7 @@ export class CategoryClient implements ICategoryClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<CategoryDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<CategoryModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -473,7 +559,7 @@ export class CategoryClient implements ICategoryClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CategoryDetailsModel.fromJS(item));
+                    result200!.push(CategoryModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -485,7 +571,7 @@ export class CategoryClient implements ICategoryClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CategoryDetailsModel[]>(null as any);
+        return Promise.resolve<CategoryModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -562,7 +648,7 @@ export class CategoryClient implements ICategoryClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<CategoryDetailsModel> {
+    get(id?: number | undefined): Promise<CategoryModel> {
         let url_ = this.baseUrl + "/api/Category/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -582,14 +668,14 @@ export class CategoryClient implements ICategoryClient {
         });
     }
 
-    protected processGet(response: Response): Promise<CategoryDetailsModel> {
+    protected processGet(response: Response): Promise<CategoryModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CategoryDetailsModel.fromJS(resultData200);
+            result200 = CategoryModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -597,7 +683,7 @@ export class CategoryClient implements ICategoryClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CategoryDetailsModel>(null as any);
+        return Promise.resolve<CategoryModel>(null as any);
     }
 
     getHistoryTotalCount(id?: number | undefined): Promise<number> {
@@ -695,15 +781,17 @@ export class CategoryClient implements ICategoryClient {
 
 export interface ICompanyCategoryClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryDetailsModel[]>;
+    getAllDetail(): Promise<CompanyCategoryView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<CompanyCategoryDetailsModel>;
+    get(id?: number | undefined): Promise<CompanyCategoryModel>;
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number>;
 
@@ -722,7 +810,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryModel[]> {
         let url_ = this.baseUrl + "/api/CompanyCategory/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -742,7 +830,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<CompanyCategoryDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<CompanyCategoryModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -752,7 +840,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CompanyCategoryDetailsModel.fromJS(item));
+                    result200!.push(CompanyCategoryModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -764,10 +852,51 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CompanyCategoryDetailsModel[]>(null as any);
+        return Promise.resolve<CompanyCategoryModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryDetailsModel[]> {
+    getAllDetail(): Promise<CompanyCategoryView[]> {
+        let url_ = this.baseUrl + "/api/CompanyCategory/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<CompanyCategoryView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CompanyCategoryView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CompanyCategoryView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyCategoryModel[]> {
         let url_ = this.baseUrl + "/api/CompanyCategory/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -791,7 +920,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<CompanyCategoryDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<CompanyCategoryModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -801,7 +930,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CompanyCategoryDetailsModel.fromJS(item));
+                    result200!.push(CompanyCategoryModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -813,7 +942,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CompanyCategoryDetailsModel[]>(null as any);
+        return Promise.resolve<CompanyCategoryModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -890,7 +1019,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<CompanyCategoryDetailsModel> {
+    get(id?: number | undefined): Promise<CompanyCategoryModel> {
         let url_ = this.baseUrl + "/api/CompanyCategory/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -910,14 +1039,14 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
         });
     }
 
-    protected processGet(response: Response): Promise<CompanyCategoryDetailsModel> {
+    protected processGet(response: Response): Promise<CompanyCategoryModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CompanyCategoryDetailsModel.fromJS(resultData200);
+            result200 = CompanyCategoryModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -925,7 +1054,7 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CompanyCategoryDetailsModel>(null as any);
+        return Promise.resolve<CompanyCategoryModel>(null as any);
     }
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number> {
@@ -1064,17 +1193,19 @@ export class CompanyCategoryClient implements ICompanyCategoryClient {
 
 export interface ICompanyClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyDetailsModel[]>;
+    getAllDetail(): Promise<CompanyView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<CompanyDetailsModel>;
+    get(id?: number | undefined): Promise<CompanyModel>;
 
-    getCompanyByEmail(companyEmail?: string | null | undefined): Promise<CompanyDetailsModel>;
+    getCompanyByEmail(companyEmail?: string | null | undefined): Promise<CompanyModel>;
 
     registerUser(company: CompanyCreateModel): Promise<number>;
 
@@ -1095,7 +1226,7 @@ export class CompanyClient implements ICompanyClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyModel[]> {
         let url_ = this.baseUrl + "/api/Company/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -1115,7 +1246,7 @@ export class CompanyClient implements ICompanyClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<CompanyDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<CompanyModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1125,7 +1256,7 @@ export class CompanyClient implements ICompanyClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CompanyDetailsModel.fromJS(item));
+                    result200!.push(CompanyModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -1137,10 +1268,51 @@ export class CompanyClient implements ICompanyClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CompanyDetailsModel[]>(null as any);
+        return Promise.resolve<CompanyModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyDetailsModel[]> {
+    getAllDetail(): Promise<CompanyView[]> {
+        let url_ = this.baseUrl + "/api/Company/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<CompanyView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CompanyView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CompanyView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CompanyModel[]> {
         let url_ = this.baseUrl + "/api/Company/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -1164,7 +1336,7 @@ export class CompanyClient implements ICompanyClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<CompanyDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<CompanyModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1174,7 +1346,7 @@ export class CompanyClient implements ICompanyClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CompanyDetailsModel.fromJS(item));
+                    result200!.push(CompanyModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -1186,7 +1358,7 @@ export class CompanyClient implements ICompanyClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CompanyDetailsModel[]>(null as any);
+        return Promise.resolve<CompanyModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -1263,7 +1435,7 @@ export class CompanyClient implements ICompanyClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<CompanyDetailsModel> {
+    get(id?: number | undefined): Promise<CompanyModel> {
         let url_ = this.baseUrl + "/api/Company/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -1283,14 +1455,14 @@ export class CompanyClient implements ICompanyClient {
         });
     }
 
-    protected processGet(response: Response): Promise<CompanyDetailsModel> {
+    protected processGet(response: Response): Promise<CompanyModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CompanyDetailsModel.fromJS(resultData200);
+            result200 = CompanyModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1298,10 +1470,10 @@ export class CompanyClient implements ICompanyClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CompanyDetailsModel>(null as any);
+        return Promise.resolve<CompanyModel>(null as any);
     }
 
-    getCompanyByEmail(companyEmail?: string | null | undefined): Promise<CompanyDetailsModel> {
+    getCompanyByEmail(companyEmail?: string | null | undefined): Promise<CompanyModel> {
         let url_ = this.baseUrl + "/api/Company/GetCompanyByEmail?";
         if (companyEmail !== undefined && companyEmail !== null)
             url_ += "companyEmail=" + encodeURIComponent("" + companyEmail) + "&";
@@ -1319,14 +1491,14 @@ export class CompanyClient implements ICompanyClient {
         });
     }
 
-    protected processGetCompanyByEmail(response: Response): Promise<CompanyDetailsModel> {
+    protected processGetCompanyByEmail(response: Response): Promise<CompanyModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CompanyDetailsModel.fromJS(resultData200);
+            result200 = CompanyModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1334,7 +1506,7 @@ export class CompanyClient implements ICompanyClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CompanyDetailsModel>(null as any);
+        return Promise.resolve<CompanyModel>(null as any);
     }
 
     registerUser(company: CompanyCreateModel): Promise<number> {
@@ -1512,17 +1684,19 @@ export class CompanyClient implements ICompanyClient {
 
 export interface ICustomerClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerDetailsModel[]>;
+    getAllDetail(): Promise<CustomerView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<CustomerDetailsModel>;
+    get(id?: number | undefined): Promise<CustomerModel>;
 
-    getCustomerByEmail(customerEmail?: string | null | undefined): Promise<CustomerDetailsModel>;
+    getCustomerByEmail(customerEmail?: string | null | undefined): Promise<CustomerModel>;
 
     registerUser(customer: CustomerCreateModel): Promise<number>;
 
@@ -1543,7 +1717,7 @@ export class CustomerClient implements ICustomerClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerModel[]> {
         let url_ = this.baseUrl + "/api/Customer/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -1563,7 +1737,7 @@ export class CustomerClient implements ICustomerClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<CustomerDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<CustomerModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1573,7 +1747,7 @@ export class CustomerClient implements ICustomerClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CustomerDetailsModel.fromJS(item));
+                    result200!.push(CustomerModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -1585,10 +1759,51 @@ export class CustomerClient implements ICustomerClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CustomerDetailsModel[]>(null as any);
+        return Promise.resolve<CustomerModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerDetailsModel[]> {
+    getAllDetail(): Promise<CustomerView[]> {
+        let url_ = this.baseUrl + "/api/Customer/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<CustomerView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CustomerView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CustomerView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<CustomerModel[]> {
         let url_ = this.baseUrl + "/api/Customer/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -1612,7 +1827,7 @@ export class CustomerClient implements ICustomerClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<CustomerDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<CustomerModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1622,7 +1837,7 @@ export class CustomerClient implements ICustomerClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CustomerDetailsModel.fromJS(item));
+                    result200!.push(CustomerModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -1634,7 +1849,7 @@ export class CustomerClient implements ICustomerClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CustomerDetailsModel[]>(null as any);
+        return Promise.resolve<CustomerModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -1711,7 +1926,7 @@ export class CustomerClient implements ICustomerClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<CustomerDetailsModel> {
+    get(id?: number | undefined): Promise<CustomerModel> {
         let url_ = this.baseUrl + "/api/Customer/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -1731,14 +1946,14 @@ export class CustomerClient implements ICustomerClient {
         });
     }
 
-    protected processGet(response: Response): Promise<CustomerDetailsModel> {
+    protected processGet(response: Response): Promise<CustomerModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerDetailsModel.fromJS(resultData200);
+            result200 = CustomerModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1746,10 +1961,10 @@ export class CustomerClient implements ICustomerClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CustomerDetailsModel>(null as any);
+        return Promise.resolve<CustomerModel>(null as any);
     }
 
-    getCustomerByEmail(customerEmail?: string | null | undefined): Promise<CustomerDetailsModel> {
+    getCustomerByEmail(customerEmail?: string | null | undefined): Promise<CustomerModel> {
         let url_ = this.baseUrl + "/api/Customer/GetCustomerByEmail?";
         if (customerEmail !== undefined && customerEmail !== null)
             url_ += "customerEmail=" + encodeURIComponent("" + customerEmail) + "&";
@@ -1767,14 +1982,14 @@ export class CustomerClient implements ICustomerClient {
         });
     }
 
-    protected processGetCustomerByEmail(response: Response): Promise<CustomerDetailsModel> {
+    protected processGetCustomerByEmail(response: Response): Promise<CustomerModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerDetailsModel.fromJS(resultData200);
+            result200 = CustomerModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -1782,7 +1997,7 @@ export class CustomerClient implements ICustomerClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CustomerDetailsModel>(null as any);
+        return Promise.resolve<CustomerModel>(null as any);
     }
 
     registerUser(customer: CustomerCreateModel): Promise<number> {
@@ -2014,15 +2229,17 @@ export class DBClient implements IDBClient {
 
 export interface ILocationClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationDetailsModel[]>;
+    getAllDetail(): Promise<LocationView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<LocationDetailsModel>;
+    get(id?: number | undefined): Promise<LocationModel>;
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number>;
 
@@ -2041,7 +2258,7 @@ export class LocationClient implements ILocationClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationModel[]> {
         let url_ = this.baseUrl + "/api/Location/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -2061,7 +2278,7 @@ export class LocationClient implements ILocationClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<LocationDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<LocationModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2071,7 +2288,7 @@ export class LocationClient implements ILocationClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(LocationDetailsModel.fromJS(item));
+                    result200!.push(LocationModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2083,10 +2300,51 @@ export class LocationClient implements ILocationClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<LocationDetailsModel[]>(null as any);
+        return Promise.resolve<LocationModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationDetailsModel[]> {
+    getAllDetail(): Promise<LocationView[]> {
+        let url_ = this.baseUrl + "/api/Location/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<LocationView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(LocationView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LocationView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<LocationModel[]> {
         let url_ = this.baseUrl + "/api/Location/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -2110,7 +2368,7 @@ export class LocationClient implements ILocationClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<LocationDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<LocationModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2120,7 +2378,7 @@ export class LocationClient implements ILocationClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(LocationDetailsModel.fromJS(item));
+                    result200!.push(LocationModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2132,7 +2390,7 @@ export class LocationClient implements ILocationClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<LocationDetailsModel[]>(null as any);
+        return Promise.resolve<LocationModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -2209,7 +2467,7 @@ export class LocationClient implements ILocationClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<LocationDetailsModel> {
+    get(id?: number | undefined): Promise<LocationModel> {
         let url_ = this.baseUrl + "/api/Location/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -2229,14 +2487,14 @@ export class LocationClient implements ILocationClient {
         });
     }
 
-    protected processGet(response: Response): Promise<LocationDetailsModel> {
+    protected processGet(response: Response): Promise<LocationModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LocationDetailsModel.fromJS(resultData200);
+            result200 = LocationModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2244,7 +2502,7 @@ export class LocationClient implements ILocationClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<LocationDetailsModel>(null as any);
+        return Promise.resolve<LocationModel>(null as any);
     }
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number> {
@@ -2383,9 +2641,11 @@ export class LocationClient implements ILocationClient {
 
 export interface INotesClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesDetailsModel[]>;
+    getAllDetail(): Promise<NotesView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesModel[]>;
 
     getTotalCount(): Promise<number>;
 
@@ -2410,7 +2670,7 @@ export class NotesClient implements INotesClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesModel[]> {
         let url_ = this.baseUrl + "/api/Notes/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -2430,7 +2690,7 @@ export class NotesClient implements INotesClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<NotesDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<NotesModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2440,7 +2700,7 @@ export class NotesClient implements INotesClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(NotesDetailsModel.fromJS(item));
+                    result200!.push(NotesModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2452,10 +2712,51 @@ export class NotesClient implements INotesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NotesDetailsModel[]>(null as any);
+        return Promise.resolve<NotesModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesDetailsModel[]> {
+    getAllDetail(): Promise<NotesView[]> {
+        let url_ = this.baseUrl + "/api/Notes/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<NotesView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NotesView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NotesView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<NotesModel[]> {
         let url_ = this.baseUrl + "/api/Notes/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -2479,7 +2780,7 @@ export class NotesClient implements INotesClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<NotesDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<NotesModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2489,7 +2790,7 @@ export class NotesClient implements INotesClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(NotesDetailsModel.fromJS(item));
+                    result200!.push(NotesModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2501,7 +2802,7 @@ export class NotesClient implements INotesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<NotesDetailsModel[]>(null as any);
+        return Promise.resolve<NotesModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -2752,15 +3053,17 @@ export class NotesClient implements INotesClient {
 
 export interface IPasscodeClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeDetailsModel[]>;
+    getAllDetail(): Promise<PasscodeView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<PasscodeDetailsModel>;
+    get(id?: number | undefined): Promise<PasscodeModel>;
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number>;
 
@@ -2779,7 +3082,7 @@ export class PasscodeClient implements IPasscodeClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeModel[]> {
         let url_ = this.baseUrl + "/api/Passcode/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -2799,7 +3102,7 @@ export class PasscodeClient implements IPasscodeClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<PasscodeDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<PasscodeModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2809,7 +3112,7 @@ export class PasscodeClient implements IPasscodeClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(PasscodeDetailsModel.fromJS(item));
+                    result200!.push(PasscodeModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2821,10 +3124,51 @@ export class PasscodeClient implements IPasscodeClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PasscodeDetailsModel[]>(null as any);
+        return Promise.resolve<PasscodeModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeDetailsModel[]> {
+    getAllDetail(): Promise<PasscodeView[]> {
+        let url_ = this.baseUrl + "/api/Passcode/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<PasscodeView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(PasscodeView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PasscodeView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<PasscodeModel[]> {
         let url_ = this.baseUrl + "/api/Passcode/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -2848,7 +3192,7 @@ export class PasscodeClient implements IPasscodeClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<PasscodeDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<PasscodeModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2858,7 +3202,7 @@ export class PasscodeClient implements IPasscodeClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(PasscodeDetailsModel.fromJS(item));
+                    result200!.push(PasscodeModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2870,7 +3214,7 @@ export class PasscodeClient implements IPasscodeClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PasscodeDetailsModel[]>(null as any);
+        return Promise.resolve<PasscodeModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -2947,7 +3291,7 @@ export class PasscodeClient implements IPasscodeClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<PasscodeDetailsModel> {
+    get(id?: number | undefined): Promise<PasscodeModel> {
         let url_ = this.baseUrl + "/api/Passcode/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -2967,14 +3311,14 @@ export class PasscodeClient implements IPasscodeClient {
         });
     }
 
-    protected processGet(response: Response): Promise<PasscodeDetailsModel> {
+    protected processGet(response: Response): Promise<PasscodeModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PasscodeDetailsModel.fromJS(resultData200);
+            result200 = PasscodeModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -2982,7 +3326,7 @@ export class PasscodeClient implements IPasscodeClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PasscodeDetailsModel>(null as any);
+        return Promise.resolve<PasscodeModel>(null as any);
     }
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number> {
@@ -3121,15 +3465,17 @@ export class PasscodeClient implements IPasscodeClient {
 
 export interface IRoleClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleDetailsModel[]>;
+    getAllDetail(): Promise<RoleView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<RoleDetailsModel>;
+    get(id?: number | undefined): Promise<RoleModel>;
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number>;
 
@@ -3148,7 +3494,7 @@ export class RoleClient implements IRoleClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleModel[]> {
         let url_ = this.baseUrl + "/api/Role/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -3168,7 +3514,7 @@ export class RoleClient implements IRoleClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<RoleDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<RoleModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -3178,7 +3524,7 @@ export class RoleClient implements IRoleClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(RoleDetailsModel.fromJS(item));
+                    result200!.push(RoleModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3190,10 +3536,51 @@ export class RoleClient implements IRoleClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RoleDetailsModel[]>(null as any);
+        return Promise.resolve<RoleModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleDetailsModel[]> {
+    getAllDetail(): Promise<RoleView[]> {
+        let url_ = this.baseUrl + "/api/Role/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<RoleView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(RoleView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RoleView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<RoleModel[]> {
         let url_ = this.baseUrl + "/api/Role/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -3217,7 +3604,7 @@ export class RoleClient implements IRoleClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<RoleDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<RoleModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -3227,7 +3614,7 @@ export class RoleClient implements IRoleClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(RoleDetailsModel.fromJS(item));
+                    result200!.push(RoleModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3239,7 +3626,7 @@ export class RoleClient implements IRoleClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RoleDetailsModel[]>(null as any);
+        return Promise.resolve<RoleModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -3316,7 +3703,7 @@ export class RoleClient implements IRoleClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<RoleDetailsModel> {
+    get(id?: number | undefined): Promise<RoleModel> {
         let url_ = this.baseUrl + "/api/Role/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -3336,14 +3723,14 @@ export class RoleClient implements IRoleClient {
         });
     }
 
-    protected processGet(response: Response): Promise<RoleDetailsModel> {
+    protected processGet(response: Response): Promise<RoleModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RoleDetailsModel.fromJS(resultData200);
+            result200 = RoleModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3351,7 +3738,7 @@ export class RoleClient implements IRoleClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RoleDetailsModel>(null as any);
+        return Promise.resolve<RoleModel>(null as any);
     }
 
     update(id?: number | undefined, roles?: string | null | undefined): Promise<number> {
@@ -3938,15 +4325,17 @@ export class UserClient implements IUserClient {
 
 export interface IUserRoleClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleDetailsModel[]>;
+    getAllDetail(): Promise<UserRoleView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<UserRoleDetailsModel>;
+    get(id?: number | undefined): Promise<UserRoleModel>;
 
     getHistoryTotalCount(id?: number | undefined): Promise<number>;
 
@@ -3963,7 +4352,7 @@ export class UserRoleClient implements IUserRoleClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleModel[]> {
         let url_ = this.baseUrl + "/api/UserRole/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -3983,7 +4372,7 @@ export class UserRoleClient implements IUserRoleClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<UserRoleDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<UserRoleModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -3993,7 +4382,7 @@ export class UserRoleClient implements IUserRoleClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(UserRoleDetailsModel.fromJS(item));
+                    result200!.push(UserRoleModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -4005,10 +4394,51 @@ export class UserRoleClient implements IUserRoleClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserRoleDetailsModel[]>(null as any);
+        return Promise.resolve<UserRoleModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleDetailsModel[]> {
+    getAllDetail(): Promise<UserRoleView[]> {
+        let url_ = this.baseUrl + "/api/UserRole/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<UserRoleView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(UserRoleView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserRoleView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UserRoleModel[]> {
         let url_ = this.baseUrl + "/api/UserRole/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -4032,7 +4462,7 @@ export class UserRoleClient implements IUserRoleClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<UserRoleDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<UserRoleModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -4042,7 +4472,7 @@ export class UserRoleClient implements IUserRoleClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(UserRoleDetailsModel.fromJS(item));
+                    result200!.push(UserRoleModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -4054,7 +4484,7 @@ export class UserRoleClient implements IUserRoleClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserRoleDetailsModel[]>(null as any);
+        return Promise.resolve<UserRoleModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -4131,7 +4561,7 @@ export class UserRoleClient implements IUserRoleClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<UserRoleDetailsModel> {
+    get(id?: number | undefined): Promise<UserRoleModel> {
         let url_ = this.baseUrl + "/api/UserRole/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -4151,14 +4581,14 @@ export class UserRoleClient implements IUserRoleClient {
         });
     }
 
-    protected processGet(response: Response): Promise<UserRoleDetailsModel> {
+    protected processGet(response: Response): Promise<UserRoleModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserRoleDetailsModel.fromJS(resultData200);
+            result200 = UserRoleModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -4166,7 +4596,7 @@ export class UserRoleClient implements IUserRoleClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UserRoleDetailsModel>(null as any);
+        return Promise.resolve<UserRoleModel>(null as any);
     }
 
     getHistoryTotalCount(id?: number | undefined): Promise<number> {
@@ -4264,17 +4694,19 @@ export class UserRoleClient implements IUserRoleClient {
 
 export interface IUsersClient {
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersDetailsModel[]>;
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersModel[]>;
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersDetailsModel[]>;
+    getAllDetail(): Promise<UsersView[]>;
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersModel[]>;
 
     getTotalCount(): Promise<number>;
 
     getTotalCountBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined): Promise<number>;
 
-    get(id?: number | undefined): Promise<UsersDetailsModel>;
+    get(id?: number | undefined): Promise<UsersModel>;
 
-    getUserByEmail(userEmail?: string | null | undefined): Promise<UsersDetailsModel>;
+    getUserByEmail(userEmail?: string | null | undefined): Promise<UsersModel>;
 
     registerUser(users: UsersCreateModel): Promise<number>;
 
@@ -4295,7 +4727,7 @@ export class UsersClient implements IUsersClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44370";
     }
 
-    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersDetailsModel[]> {
+    getAll(pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersModel[]> {
         let url_ = this.baseUrl + "/api/Users/GetAllAsync?";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
@@ -4315,7 +4747,7 @@ export class UsersClient implements IUsersClient {
         });
     }
 
-    protected processGetAll(response: Response): Promise<UsersDetailsModel[]> {
+    protected processGetAll(response: Response): Promise<UsersModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -4325,7 +4757,7 @@ export class UsersClient implements IUsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(UsersDetailsModel.fromJS(item));
+                    result200!.push(UsersModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -4337,10 +4769,51 @@ export class UsersClient implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UsersDetailsModel[]>(null as any);
+        return Promise.resolve<UsersModel[]>(null as any);
     }
 
-    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersDetailsModel[]> {
+    getAllDetail(): Promise<UsersView[]> {
+        let url_ = this.baseUrl + "/api/Users/GetAllDetailAsync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAllDetail(_response);
+        });
+    }
+
+    protected processGetAllDetail(response: Response): Promise<UsersView[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(UsersView.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UsersView[]>(null as any);
+    }
+
+    getAllBySearch(columnName?: string | null | undefined, searchValue?: string | null | undefined, pageNumber?: number | null | undefined, pageSize?: number | null | undefined): Promise<UsersModel[]> {
         let url_ = this.baseUrl + "/api/Users/GetAllBySearchAsync?";
         if (columnName !== undefined && columnName !== null)
             url_ += "columnName=" + encodeURIComponent("" + columnName) + "&";
@@ -4364,7 +4837,7 @@ export class UsersClient implements IUsersClient {
         });
     }
 
-    protected processGetAllBySearch(response: Response): Promise<UsersDetailsModel[]> {
+    protected processGetAllBySearch(response: Response): Promise<UsersModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -4374,7 +4847,7 @@ export class UsersClient implements IUsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(UsersDetailsModel.fromJS(item));
+                    result200!.push(UsersModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -4386,7 +4859,7 @@ export class UsersClient implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UsersDetailsModel[]>(null as any);
+        return Promise.resolve<UsersModel[]>(null as any);
     }
 
     getTotalCount(): Promise<number> {
@@ -4463,7 +4936,7 @@ export class UsersClient implements IUsersClient {
         return Promise.resolve<number>(null as any);
     }
 
-    get(id?: number | undefined): Promise<UsersDetailsModel> {
+    get(id?: number | undefined): Promise<UsersModel> {
         let url_ = this.baseUrl + "/api/Users/GetAsync?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -4483,14 +4956,14 @@ export class UsersClient implements IUsersClient {
         });
     }
 
-    protected processGet(response: Response): Promise<UsersDetailsModel> {
+    protected processGet(response: Response): Promise<UsersModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UsersDetailsModel.fromJS(resultData200);
+            result200 = UsersModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -4498,10 +4971,10 @@ export class UsersClient implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UsersDetailsModel>(null as any);
+        return Promise.resolve<UsersModel>(null as any);
     }
 
-    getUserByEmail(userEmail?: string | null | undefined): Promise<UsersDetailsModel> {
+    getUserByEmail(userEmail?: string | null | undefined): Promise<UsersModel> {
         let url_ = this.baseUrl + "/api/Users/GetUserByEmail?";
         if (userEmail !== undefined && userEmail !== null)
             url_ += "userEmail=" + encodeURIComponent("" + userEmail) + "&";
@@ -4519,14 +4992,14 @@ export class UsersClient implements IUsersClient {
         });
     }
 
-    protected processGetUserByEmail(response: Response): Promise<UsersDetailsModel> {
+    protected processGetUserByEmail(response: Response): Promise<UsersModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UsersDetailsModel.fromJS(resultData200);
+            result200 = UsersModel.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -4534,7 +5007,7 @@ export class UsersClient implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<UsersDetailsModel>(null as any);
+        return Promise.resolve<UsersModel>(null as any);
     }
 
     registerUser(users: UsersCreateModel): Promise<number> {
@@ -4710,13 +5183,13 @@ export class UsersClient implements IUsersClient {
     }
 }
 
-export class VisitReminderDetailsModel implements IVisitReminderDetailsModel {
+export class VisitReminderModel implements IVisitReminderModel {
     id!: number;
     customer_id!: number;
     user_id!: number;
     reminder!: Date;
 
-    constructor(data?: IVisitReminderDetailsModel) {
+    constructor(data?: IVisitReminderModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4734,9 +5207,9 @@ export class VisitReminderDetailsModel implements IVisitReminderDetailsModel {
         }
     }
 
-    static fromJS(data: any): VisitReminderDetailsModel {
+    static fromJS(data: any): VisitReminderModel {
         data = typeof data === 'object' ? data : {};
-        let result = new VisitReminderDetailsModel();
+        let result = new VisitReminderModel();
         result.init(data);
         return result;
     }
@@ -4751,10 +5224,66 @@ export class VisitReminderDetailsModel implements IVisitReminderDetailsModel {
     }
 }
 
-export interface IVisitReminderDetailsModel {
+export interface IVisitReminderModel {
     id: number;
     customer_id: number;
     user_id: number;
+    reminder: Date;
+}
+
+export class VisitReminderView implements IVisitReminderView {
+    id!: number;
+    customer_id!: number;
+    user_id!: number;
+    customerFullName?: string | undefined;
+    userFullName?: string | undefined;
+    reminder!: Date;
+
+    constructor(data?: IVisitReminderView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.customer_id = _data["customer_id"];
+            this.user_id = _data["user_id"];
+            this.customerFullName = _data["customerFullName"];
+            this.userFullName = _data["userFullName"];
+            this.reminder = _data["reminder"] ? new Date(_data["reminder"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): VisitReminderView {
+        data = typeof data === 'object' ? data : {};
+        let result = new VisitReminderView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["customer_id"] = this.customer_id;
+        data["user_id"] = this.user_id;
+        data["customerFullName"] = this.customerFullName;
+        data["userFullName"] = this.userFullName;
+        data["reminder"] = this.reminder ? this.reminder.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IVisitReminderView {
+    id: number;
+    customer_id: number;
+    user_id: number;
+    customerFullName?: string | undefined;
+    userFullName?: string | undefined;
     reminder: Date;
 }
 
@@ -4915,11 +5444,11 @@ export interface IUserHistoryModel extends IHistoryModelBase {
     lastLoginDateTime: Date;
 }
 
-export class CategoryDetailsModel implements ICategoryDetailsModel {
+export class CategoryModel implements ICategoryModel {
     id!: number;
     name?: string | undefined;
 
-    constructor(data?: ICategoryDetailsModel) {
+    constructor(data?: ICategoryModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -4935,9 +5464,9 @@ export class CategoryDetailsModel implements ICategoryDetailsModel {
         }
     }
 
-    static fromJS(data: any): CategoryDetailsModel {
+    static fromJS(data: any): CategoryModel {
         data = typeof data === 'object' ? data : {};
-        let result = new CategoryDetailsModel();
+        let result = new CategoryModel();
         result.init(data);
         return result;
     }
@@ -4950,7 +5479,47 @@ export class CategoryDetailsModel implements ICategoryDetailsModel {
     }
 }
 
-export interface ICategoryDetailsModel {
+export interface ICategoryModel {
+    id: number;
+    name?: string | undefined;
+}
+
+export class CategoryView implements ICategoryView {
+    id!: number;
+    name?: string | undefined;
+
+    constructor(data?: ICategoryView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): CategoryView {
+        data = typeof data === 'object' ? data : {};
+        let result = new CategoryView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ICategoryView {
     id: number;
     name?: string | undefined;
 }
@@ -4992,13 +5561,13 @@ export interface ICategoryHistoryModel extends IHistoryModelBase {
     name?: string | undefined;
 }
 
-export class CompanyCategoryDetailsModel implements ICompanyCategoryDetailsModel {
+export class CompanyCategoryModel implements ICompanyCategoryModel {
     id!: number;
     company_id!: number;
     category_id!: number;
     price!: number;
 
-    constructor(data?: ICompanyCategoryDetailsModel) {
+    constructor(data?: ICompanyCategoryModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5016,9 +5585,9 @@ export class CompanyCategoryDetailsModel implements ICompanyCategoryDetailsModel
         }
     }
 
-    static fromJS(data: any): CompanyCategoryDetailsModel {
+    static fromJS(data: any): CompanyCategoryModel {
         data = typeof data === 'object' ? data : {};
-        let result = new CompanyCategoryDetailsModel();
+        let result = new CompanyCategoryModel();
         result.init(data);
         return result;
     }
@@ -5033,10 +5602,66 @@ export class CompanyCategoryDetailsModel implements ICompanyCategoryDetailsModel
     }
 }
 
-export interface ICompanyCategoryDetailsModel {
+export interface ICompanyCategoryModel {
     id: number;
     company_id: number;
     category_id: number;
+    price: number;
+}
+
+export class CompanyCategoryView implements ICompanyCategoryView {
+    id!: number;
+    company_id!: number;
+    category_id!: number;
+    company?: string | undefined;
+    category?: string | undefined;
+    price!: number;
+
+    constructor(data?: ICompanyCategoryView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.company_id = _data["company_id"];
+            this.category_id = _data["category_id"];
+            this.company = _data["company"];
+            this.category = _data["category"];
+            this.price = _data["price"];
+        }
+    }
+
+    static fromJS(data: any): CompanyCategoryView {
+        data = typeof data === 'object' ? data : {};
+        let result = new CompanyCategoryView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["company_id"] = this.company_id;
+        data["category_id"] = this.category_id;
+        data["company"] = this.company;
+        data["category"] = this.category;
+        data["price"] = this.price;
+        return data;
+    }
+}
+
+export interface ICompanyCategoryView {
+    id: number;
+    company_id: number;
+    category_id: number;
+    company?: string | undefined;
+    category?: string | undefined;
     price: number;
 }
 
@@ -5085,22 +5710,15 @@ export interface ICompanyCategoryHistoryModel extends IHistoryModelBase {
     price: number;
 }
 
-export class CompanyDetailsModel implements ICompanyDetailsModel {
+export class CompanyModel implements ICompanyModel {
     id!: number;
     name?: string | undefined;
     email?: string | undefined;
     address?: string | undefined;
     contact!: number;
     country?: string | undefined;
-    createdOn!: Date;
-    createdBy?: string | undefined;
-    updatedOn!: Date;
-    updatedBy?: string | undefined;
-    isDeleted!: boolean;
-    deletdBy?: string | undefined;
-    deletedOn!: Date;
 
-    constructor(data?: ICompanyDetailsModel) {
+    constructor(data?: ICompanyModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5117,19 +5735,12 @@ export class CompanyDetailsModel implements ICompanyDetailsModel {
             this.address = _data["address"];
             this.contact = _data["contact"];
             this.country = _data["country"];
-            this.createdOn = _data["createdOn"] ? new Date(_data["createdOn"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.updatedOn = _data["updatedOn"] ? new Date(_data["updatedOn"].toString()) : <any>undefined;
-            this.updatedBy = _data["updatedBy"];
-            this.isDeleted = _data["isDeleted"];
-            this.deletdBy = _data["deletdBy"];
-            this.deletedOn = _data["deletedOn"] ? new Date(_data["deletedOn"].toString()) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): CompanyDetailsModel {
+    static fromJS(data: any): CompanyModel {
         data = typeof data === 'object' ? data : {};
-        let result = new CompanyDetailsModel();
+        let result = new CompanyModel();
         result.init(data);
         return result;
     }
@@ -5142,31 +5753,73 @@ export class CompanyDetailsModel implements ICompanyDetailsModel {
         data["address"] = this.address;
         data["contact"] = this.contact;
         data["country"] = this.country;
-        data["createdOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["updatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["updatedBy"] = this.updatedBy;
-        data["isDeleted"] = this.isDeleted;
-        data["deletdBy"] = this.deletdBy;
-        data["deletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         return data;
     }
 }
 
-export interface ICompanyDetailsModel {
+export interface ICompanyModel {
     id: number;
     name?: string | undefined;
     email?: string | undefined;
     address?: string | undefined;
     contact: number;
     country?: string | undefined;
-    createdOn: Date;
-    createdBy?: string | undefined;
-    updatedOn: Date;
-    updatedBy?: string | undefined;
-    isDeleted: boolean;
-    deletdBy?: string | undefined;
-    deletedOn: Date;
+}
+
+export class CompanyView implements ICompanyView {
+    id!: number;
+    name?: string | undefined;
+    email?: string | undefined;
+    address?: string | undefined;
+    contact!: number;
+    country?: string | undefined;
+
+    constructor(data?: ICompanyView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.address = _data["address"];
+            this.contact = _data["contact"];
+            this.country = _data["country"];
+        }
+    }
+
+    static fromJS(data: any): CompanyView {
+        data = typeof data === 'object' ? data : {};
+        let result = new CompanyView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["address"] = this.address;
+        data["contact"] = this.contact;
+        data["country"] = this.country;
+        return data;
+    }
+}
+
+export interface ICompanyView {
+    id: number;
+    name?: string | undefined;
+    email?: string | undefined;
+    address?: string | undefined;
+    contact: number;
+    country?: string | undefined;
 }
 
 export class CompanyCreateModel implements ICompanyCreateModel {
@@ -5302,7 +5955,7 @@ export interface ICompanyHistoryModel extends IHistoryModelBase {
     deletedOn: Date;
 }
 
-export class CustomerDetailsModel implements ICustomerDetailsModel {
+export class CustomerModel implements ICustomerModel {
     id!: number;
     fullname?: string | undefined;
     contact_No!: number;
@@ -5311,7 +5964,7 @@ export class CustomerDetailsModel implements ICustomerDetailsModel {
     address?: string | undefined;
     gender?: string | undefined;
 
-    constructor(data?: ICustomerDetailsModel) {
+    constructor(data?: ICustomerModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5332,9 +5985,9 @@ export class CustomerDetailsModel implements ICustomerDetailsModel {
         }
     }
 
-    static fromJS(data: any): CustomerDetailsModel {
+    static fromJS(data: any): CustomerModel {
         data = typeof data === 'object' ? data : {};
-        let result = new CustomerDetailsModel();
+        let result = new CustomerModel();
         result.init(data);
         return result;
     }
@@ -5352,9 +6005,69 @@ export class CustomerDetailsModel implements ICustomerDetailsModel {
     }
 }
 
-export interface ICustomerDetailsModel {
+export interface ICustomerModel {
     id: number;
     fullname?: string | undefined;
+    contact_No: number;
+    email?: string | undefined;
+    dob: Date;
+    address?: string | undefined;
+    gender?: string | undefined;
+}
+
+export class CustomerView implements ICustomerView {
+    id!: number;
+    fullName?: string | undefined;
+    contact_No!: number;
+    email?: string | undefined;
+    dob!: Date;
+    address?: string | undefined;
+    gender?: string | undefined;
+
+    constructor(data?: ICustomerView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.contact_No = _data["contact_No"];
+            this.email = _data["email"];
+            this.dob = _data["dob"] ? new Date(_data["dob"].toString()) : <any>undefined;
+            this.address = _data["address"];
+            this.gender = _data["gender"];
+        }
+    }
+
+    static fromJS(data: any): CustomerView {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["contact_No"] = this.contact_No;
+        data["email"] = this.email;
+        data["dob"] = this.dob ? this.dob.toISOString() : <any>undefined;
+        data["address"] = this.address;
+        data["gender"] = this.gender;
+        return data;
+    }
+}
+
+export interface ICustomerView {
+    id: number;
+    fullName?: string | undefined;
     contact_No: number;
     email?: string | undefined;
     dob: Date;
@@ -5515,14 +6228,14 @@ export interface ICustomerHistoryModel extends IHistoryModelBase {
     deletedOn: Date;
 }
 
-export class LocationDetailsModel implements ILocationDetailsModel {
+export class LocationModel implements ILocationModel {
     id!: number;
     user_id!: number;
     customer_id!: number;
     longitude?: string | undefined;
     lattitude?: string | undefined;
 
-    constructor(data?: ILocationDetailsModel) {
+    constructor(data?: ILocationModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5541,9 +6254,9 @@ export class LocationDetailsModel implements ILocationDetailsModel {
         }
     }
 
-    static fromJS(data: any): LocationDetailsModel {
+    static fromJS(data: any): LocationModel {
         data = typeof data === 'object' ? data : {};
-        let result = new LocationDetailsModel();
+        let result = new LocationModel();
         result.init(data);
         return result;
     }
@@ -5559,12 +6272,72 @@ export class LocationDetailsModel implements ILocationDetailsModel {
     }
 }
 
-export interface ILocationDetailsModel {
+export interface ILocationModel {
     id: number;
     user_id: number;
     customer_id: number;
     longitude?: string | undefined;
     lattitude?: string | undefined;
+}
+
+export class LocationView implements ILocationView {
+    id!: number;
+    user_id!: number;
+    customer_id!: number;
+    userFullName?: string | undefined;
+    customerFullName?: string | undefined;
+    lattitude?: string | undefined;
+    longitude?: string | undefined;
+
+    constructor(data?: ILocationView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.user_id = _data["user_id"];
+            this.customer_id = _data["customer_id"];
+            this.userFullName = _data["userFullName"];
+            this.customerFullName = _data["customerFullName"];
+            this.lattitude = _data["lattitude"];
+            this.longitude = _data["longitude"];
+        }
+    }
+
+    static fromJS(data: any): LocationView {
+        data = typeof data === 'object' ? data : {};
+        let result = new LocationView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["user_id"] = this.user_id;
+        data["customer_id"] = this.customer_id;
+        data["userFullName"] = this.userFullName;
+        data["customerFullName"] = this.customerFullName;
+        data["lattitude"] = this.lattitude;
+        data["longitude"] = this.longitude;
+        return data;
+    }
+}
+
+export interface ILocationView {
+    id: number;
+    user_id: number;
+    customer_id: number;
+    userFullName?: string | undefined;
+    customerFullName?: string | undefined;
+    lattitude?: string | undefined;
+    longitude?: string | undefined;
 }
 
 export class LocationHistoryModel extends HistoryModelBase implements ILocationHistoryModel {
@@ -5616,13 +6389,13 @@ export interface ILocationHistoryModel extends IHistoryModelBase {
     lattitude?: string | undefined;
 }
 
-export class NotesDetailsModel implements INotesDetailsModel {
+export class NotesModel implements INotesModel {
     id!: number;
     description?: string | undefined;
     user_id!: number;
     customer_id!: number;
 
-    constructor(data?: INotesDetailsModel) {
+    constructor(data?: INotesModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5640,9 +6413,9 @@ export class NotesDetailsModel implements INotesDetailsModel {
         }
     }
 
-    static fromJS(data: any): NotesDetailsModel {
+    static fromJS(data: any): NotesModel {
         data = typeof data === 'object' ? data : {};
-        let result = new NotesDetailsModel();
+        let result = new NotesModel();
         result.init(data);
         return result;
     }
@@ -5657,11 +6430,67 @@ export class NotesDetailsModel implements INotesDetailsModel {
     }
 }
 
-export interface INotesDetailsModel {
+export interface INotesModel {
     id: number;
     description?: string | undefined;
     user_id: number;
     customer_id: number;
+}
+
+export class NotesView implements INotesView {
+    id!: number;
+    description?: string | undefined;
+    user_id!: number;
+    customer_id!: number;
+    userFullName?: string | undefined;
+    customerFullName?: string | undefined;
+
+    constructor(data?: INotesView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.description = _data["description"];
+            this.user_id = _data["user_id"];
+            this.customer_id = _data["customer_id"];
+            this.userFullName = _data["userFullName"];
+            this.customerFullName = _data["customerFullName"];
+        }
+    }
+
+    static fromJS(data: any): NotesView {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotesView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["description"] = this.description;
+        data["user_id"] = this.user_id;
+        data["customer_id"] = this.customer_id;
+        data["userFullName"] = this.userFullName;
+        data["customerFullName"] = this.customerFullName;
+        return data;
+    }
+}
+
+export interface INotesView {
+    id: number;
+    description?: string | undefined;
+    user_id: number;
+    customer_id: number;
+    userFullName?: string | undefined;
+    customerFullName?: string | undefined;
 }
 
 export class NotesHistoryModel extends HistoryModelBase implements INotesHistoryModel {
@@ -5709,13 +6538,13 @@ export interface INotesHistoryModel extends IHistoryModelBase {
     customer_id: number;
 }
 
-export class PasscodeDetailsModel implements IPasscodeDetailsModel {
+export class PasscodeModel implements IPasscodeModel {
     id!: number;
     user_id!: number;
     password?: string | undefined;
     hint?: string | undefined;
 
-    constructor(data?: IPasscodeDetailsModel) {
+    constructor(data?: IPasscodeModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5733,9 +6562,9 @@ export class PasscodeDetailsModel implements IPasscodeDetailsModel {
         }
     }
 
-    static fromJS(data: any): PasscodeDetailsModel {
+    static fromJS(data: any): PasscodeModel {
         data = typeof data === 'object' ? data : {};
-        let result = new PasscodeDetailsModel();
+        let result = new PasscodeModel();
         result.init(data);
         return result;
     }
@@ -5750,9 +6579,65 @@ export class PasscodeDetailsModel implements IPasscodeDetailsModel {
     }
 }
 
-export interface IPasscodeDetailsModel {
+export interface IPasscodeModel {
     id: number;
     user_id: number;
+    password?: string | undefined;
+    hint?: string | undefined;
+}
+
+export class PasscodeView implements IPasscodeView {
+    id!: number;
+    user_id!: number;
+    userFullName?: string | undefined;
+    userName?: string | undefined;
+    password?: string | undefined;
+    hint?: string | undefined;
+
+    constructor(data?: IPasscodeView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.user_id = _data["user_id"];
+            this.userFullName = _data["userFullName"];
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+            this.hint = _data["hint"];
+        }
+    }
+
+    static fromJS(data: any): PasscodeView {
+        data = typeof data === 'object' ? data : {};
+        let result = new PasscodeView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["user_id"] = this.user_id;
+        data["userFullName"] = this.userFullName;
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        data["hint"] = this.hint;
+        return data;
+    }
+}
+
+export interface IPasscodeView {
+    id: number;
+    user_id: number;
+    userFullName?: string | undefined;
+    userName?: string | undefined;
     password?: string | undefined;
     hint?: string | undefined;
 }
@@ -5802,11 +6687,11 @@ export interface IPasscodeHistoryModel extends IHistoryModelBase {
     hint?: string | undefined;
 }
 
-export class RoleDetailsModel implements IRoleDetailsModel {
+export class RoleModel implements IRoleModel {
     id!: number;
     type?: string | undefined;
 
-    constructor(data?: IRoleDetailsModel) {
+    constructor(data?: IRoleModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5822,9 +6707,9 @@ export class RoleDetailsModel implements IRoleDetailsModel {
         }
     }
 
-    static fromJS(data: any): RoleDetailsModel {
+    static fromJS(data: any): RoleModel {
         data = typeof data === 'object' ? data : {};
-        let result = new RoleDetailsModel();
+        let result = new RoleModel();
         result.init(data);
         return result;
     }
@@ -5837,7 +6722,47 @@ export class RoleDetailsModel implements IRoleDetailsModel {
     }
 }
 
-export interface IRoleDetailsModel {
+export interface IRoleModel {
+    id: number;
+    type?: string | undefined;
+}
+
+export class RoleView implements IRoleView {
+    id!: number;
+    type?: string | undefined;
+
+    constructor(data?: IRoleView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.type = _data["type"];
+        }
+    }
+
+    static fromJS(data: any): RoleView {
+        data = typeof data === 'object' ? data : {};
+        let result = new RoleView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["type"] = this.type;
+        return data;
+    }
+}
+
+export interface IRoleView {
     id: number;
     type?: string | undefined;
 }
@@ -5931,12 +6856,12 @@ export interface IUserCreateModel {
     roles?: string | undefined;
 }
 
-export class UserRoleDetailsModel implements IUserRoleDetailsModel {
+export class UserRoleModel implements IUserRoleModel {
     id!: number;
     user_id!: number;
     role_id!: number;
 
-    constructor(data?: IUserRoleDetailsModel) {
+    constructor(data?: IUserRoleModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -5953,9 +6878,9 @@ export class UserRoleDetailsModel implements IUserRoleDetailsModel {
         }
     }
 
-    static fromJS(data: any): UserRoleDetailsModel {
+    static fromJS(data: any): UserRoleModel {
         data = typeof data === 'object' ? data : {};
-        let result = new UserRoleDetailsModel();
+        let result = new UserRoleModel();
         result.init(data);
         return result;
     }
@@ -5969,10 +6894,62 @@ export class UserRoleDetailsModel implements IUserRoleDetailsModel {
     }
 }
 
-export interface IUserRoleDetailsModel {
+export interface IUserRoleModel {
     id: number;
     user_id: number;
     role_id: number;
+}
+
+export class UserRoleView implements IUserRoleView {
+    id!: number;
+    user_id!: number;
+    role_id!: number;
+    userFullName?: string | undefined;
+    role?: string | undefined;
+
+    constructor(data?: IUserRoleView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.user_id = _data["user_id"];
+            this.role_id = _data["role_id"];
+            this.userFullName = _data["userFullName"];
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): UserRoleView {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserRoleView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["user_id"] = this.user_id;
+        data["role_id"] = this.role_id;
+        data["userFullName"] = this.userFullName;
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface IUserRoleView {
+    id: number;
+    user_id: number;
+    role_id: number;
+    userFullName?: string | undefined;
+    role?: string | undefined;
 }
 
 export class UserRoleHistoryModel extends HistoryModelBase implements IUserRoleHistoryModel {
@@ -6016,7 +6993,7 @@ export interface IUserRoleHistoryModel extends IHistoryModelBase {
     role_id: number;
 }
 
-export class UsersDetailsModel implements IUsersDetailsModel {
+export class UsersModel implements IUsersModel {
     id!: number;
     fullname?: string | undefined;
     userName?: string | undefined;
@@ -6027,7 +7004,7 @@ export class UsersDetailsModel implements IUsersDetailsModel {
     gender?: string | undefined;
     lastLogin!: Date;
 
-    constructor(data?: IUsersDetailsModel) {
+    constructor(data?: IUsersModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -6050,9 +7027,9 @@ export class UsersDetailsModel implements IUsersDetailsModel {
         }
     }
 
-    static fromJS(data: any): UsersDetailsModel {
+    static fromJS(data: any): UsersModel {
         data = typeof data === 'object' ? data : {};
-        let result = new UsersDetailsModel();
+        let result = new UsersModel();
         result.init(data);
         return result;
     }
@@ -6072,7 +7049,75 @@ export class UsersDetailsModel implements IUsersDetailsModel {
     }
 }
 
-export interface IUsersDetailsModel {
+export interface IUsersModel {
+    id: number;
+    fullname?: string | undefined;
+    userName?: string | undefined;
+    contact_No: number;
+    email?: string | undefined;
+    dob: Date;
+    address?: string | undefined;
+    gender?: string | undefined;
+    lastLogin: Date;
+}
+
+export class UsersView implements IUsersView {
+    id!: number;
+    fullname?: string | undefined;
+    userName?: string | undefined;
+    contact_No!: number;
+    email?: string | undefined;
+    dob!: Date;
+    address?: string | undefined;
+    gender?: string | undefined;
+    lastLogin!: Date;
+
+    constructor(data?: IUsersView) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullname = _data["fullname"];
+            this.userName = _data["userName"];
+            this.contact_No = _data["contact_No"];
+            this.email = _data["email"];
+            this.dob = _data["dob"] ? new Date(_data["dob"].toString()) : <any>undefined;
+            this.address = _data["address"];
+            this.gender = _data["gender"];
+            this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UsersView {
+        data = typeof data === 'object' ? data : {};
+        let result = new UsersView();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullname"] = this.fullname;
+        data["userName"] = this.userName;
+        data["contact_No"] = this.contact_No;
+        data["email"] = this.email;
+        data["dob"] = this.dob ? this.dob.toISOString() : <any>undefined;
+        data["address"] = this.address;
+        data["gender"] = this.gender;
+        data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUsersView {
     id: number;
     fullname?: string | undefined;
     userName?: string | undefined;

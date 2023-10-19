@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CustomerDetailsModel, ICustomerClient } from 'src/app/ClientApi';
+import { CustomerModel, ICustomerClient } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class CustomerComponent implements OnInit {
 
-  customer! : CustomerDetailsModel[];
+  customer! : CustomerModel[];
 
   customerDialog : boolean = false;
 
@@ -21,7 +21,7 @@ export class CustomerComponent implements OnInit {
   constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
 
   ngOnInit(): void {
-      this.apiClient.Customer.getAll().then((result) => {
+      this.apiClient.Customer.getAllDetail().then((result) => {
         console.log(result)
         this.customer = result;
       });

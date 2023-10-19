@@ -14,7 +14,7 @@
 				[rows]="5" 
 				[rowHover]="true"
 				[paginator]="true"
-				[globalFilterFields]="['id','description', 'user_id', 'customer_id']" 
+				[globalFilterFields]="['id','description', 'userFullName', 'customerFullName']" 
 				responsiveLayout="scroll"
 				[showCurrentPageReport]="true"
 				currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -64,10 +64,10 @@
 							{{notes.description}}
 						</td>
                         <td>
-                            {{notes.user_id}}
+                            {{notes.userFullName}}
                         </td>
 						<td>
-							{{notes.customer_id}}
+							{{notes.customerFullName}}
 						</td>
 					</tr>
 				</ng-template>

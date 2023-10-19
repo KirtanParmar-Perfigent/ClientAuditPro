@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IRoleClient, RoleDetailsModel } from 'src/app/ClientApi';
+import { IRoleClient, RoleModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 
 @Component({
@@ -10,7 +10,7 @@ import { ApiClient } from 'src/app/ApiClient';
 })
 export class RoleComponent implements OnInit {
 
-  role! : RoleDetailsModel[];
+  role! : RoleModel[];
 
   roleDialog : boolean = false;
 
