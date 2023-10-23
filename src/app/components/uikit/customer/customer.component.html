@@ -1,4 +1,5 @@
 <div class="grid">
+	<div class="col-12">
 	<p-panel header="Customer Table">
 		<ng-template pTemplate="icons">
 			<div class="flex">
@@ -85,7 +86,7 @@
                             {{customer.email}}
                         </td>
                         <td>
-                            {{customer.dob}}
+                            {{customer.dob | date:'dd-MM-yyyy'}}
                         </td>
 						<td>
 							{{customer.address}}
@@ -167,4 +168,5 @@
 			</p-dialog>
 		</div>
 	</p-panel>
+	</div>
 </div>

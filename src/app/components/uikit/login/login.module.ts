@@ -9,6 +9,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { CptoastComponent } from '../cptoast/cptoast.component';
+import { PasswordModule } from 'primeng/password';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { CptoastComponent } from '../cptoast/cptoast.component';
     InputTextModule,
     ButtonModule,
     FormsModule,
-    ToastModule
+    ToastModule,
+    PasswordModule,
+    CheckboxModule
   ]
 })
 export class LoginModule { }

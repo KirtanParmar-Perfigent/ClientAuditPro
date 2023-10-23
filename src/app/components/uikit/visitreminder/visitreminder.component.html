@@ -1,5 +1,6 @@
 <div class="grid">
-	<p-panel header="Location Table">
+	<div class="col-12">
+	<p-panel header="Visit Reminder Table">
 		<ng-template pTemplate="icons">
 			<div class="flex">
 				<button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
@@ -67,7 +68,7 @@
                             {{visitreminder.customerFullName}}
                         </td>
                         <td>
-                            {{visitreminder.reminder}}
+                            {{visitreminder.reminder | date:'dd-MM-yyyy hh:mm:ss a'}}
                         </td>
 					</tr>
 				</ng-template>
@@ -110,4 +111,5 @@
 			</p-dialog>
 		</div>
 	</p-panel>
+	</div>
 </div>
