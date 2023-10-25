@@ -59,6 +59,11 @@
 								Latitude
 							</div>
 						</th>
+						<th style="min-width: 12rem">
+							<div class="flex justify-content-between align-items-center">
+								Map
+							</div>
+						</th>
 					</tr>
 				</ng-template>
 				<ng-template pTemplate="body" let-location>
@@ -77,6 +82,9 @@
 						</td>
 						<td>
 							{{location.lattitude}}
+						</td>
+						<td>
+							<button class="btn btn-primary" (click)="onClick(location.longitude,location.lattitude)">Location</button>
 						</td>
 					</tr>
 				</ng-template>

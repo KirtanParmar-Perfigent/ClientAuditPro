@@ -53,4 +53,10 @@ export class LocationComponent implements OnInit {
     this.locationDialog = false;
     this.locationform.reset();
   }
+
+  onClick(longitude: string, lattitude : string)
+  {
+      console.log("Lattitude",lattitude)
+      console.log("Longitude",longitude)
+  }
 }
