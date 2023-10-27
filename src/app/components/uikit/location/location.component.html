@@ -84,11 +84,19 @@
 							{{location.lattitude}}
 						</td>
 						<td>
-							<button class="btn btn-primary" (click)="onClick(location.longitude,location.lattitude)">Location</button>
+							<button pButton pRipple icon="pi pi-map-marker" class="p-button-rounded p-button-primary" (click)="initMap(location.longitude,location.lattitude)"></button>
 						</td>
 					</tr>
 				</ng-template>
 			</p-table>
+
+			<p-dialog [(visible)]="mapDialog" header="Map" [style]="{'width': '650px', 'height': '700px'}" [modal]="true" class="p-fluid">
+				<div class="map-container">
+					<div class="map-frame mapwh justify-content-center">
+					  <div id="map"></div>
+					</div>
+				  </div>
+			</p-dialog>
 
 			<p-dialog [(visible)]="locationDialog" [style]="{width: '450px'}" header="Company Details" [modal]="true" class="p-fluid">
 				<form [formGroup]="locationform" (ngSubmit)="saveData()">
