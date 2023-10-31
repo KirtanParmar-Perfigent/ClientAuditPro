@@ -2,11 +2,12 @@
 	<div class="col-12">
 	<p-panel header="Location Table">
 		<ng-template pTemplate="icons">
-			<!-- <div class="flex">
-				<button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
+			<div class="flex">
+				<!-- <button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-success" (click)="openNew()" style="margin-right: 10px;"></button>
 				<button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary" style="margin-right: 10px;"></button>
-                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button>
-			</div> -->
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"></button> -->
+				<button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+			</div>
 		</ng-template>
 			<div class="card">
 				<p-table #dt1 

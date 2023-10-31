@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ILocationClient, LocationModel } from 'src/app/ClientApi';
 import { ApiClient } from 'src/app/ApiClient';
 import * as L from 'leaflet';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 @Component({
   selector: 'app-location',
@@ -18,6 +20,10 @@ export class LocationComponent implements OnInit {
   mapDialog : boolean = false;
 
   locationform! : FormGroup;
+
+  cols! : any[];
+
+  exportColumns : any;
 
   selected! : ILocationClient;
 
@@ -39,6 +45,19 @@ export class LocationComponent implements OnInit {
       contactNo : ['',Validators.required],
       country : ['',Validators.required]
     })
+
+    this.cols = [
+      { field: "id", header: "id" },
+      { field: "userFullName", header: "UsersName" },
+      { field: "customerFullName", header: "CustomersName" },
+      { field: "longitude", header: "Longitude" },
+      { field: "lattitude", header: "Lattitude" }
+    ];
+
+    this.exportColumns = this.cols.map(col => ({
+      title: col.header,
+      dataKey: col.field
+    }));
   }
   
   openNew()
@@ -93,4 +112,23 @@ export class LocationComponent implements OnInit {
       tiles.addTo(this.map);
     });
   }
+
+  exportPdf() {
+    const doc = new jsPDF('p', 'pt');
+    (doc as any).autoTable(this.exportColumns, this.location);
+    
+    // const pdfData = doc.output('datauristring');
+    
+    // const newTab = window.open();
+    // newTab?.document.open();
+    // newTab?.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe');
+    // newTab?.document.close();
+
+    const pdfData = doc.output('bloburl');
+    const newTab = window.open(pdfData);
+    newTab?.document.open();
+    newTab?.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe');
+    newTab?.document.close();
+  }
+  
 }
