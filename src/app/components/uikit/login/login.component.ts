@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthloginService } from '../services/authlogin.service';
 import { CptoastComponent } from '../cptoast/cptoast.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { CptoastComponent } from '../cptoast/cptoast.component';
 })
 export class LoginComponent implements OnInit{
 
-  constructor(private fb : FormBuilder, private authloginService : AuthloginService) {}
+  constructor(private fb : FormBuilder, private authloginService : AuthloginService, private router : Router) {}
   
   loginform! : FormGroup;
   temp! : Boolean;
@@ -30,7 +31,7 @@ export class LoginComponent implements OnInit{
     if(this.temp)
     {
       this.toastComponent.showSuccessToast("Login Successfully");
-      // this.router.navigate(['/uikit/company']);
+      this.router.navigate(['/uikit/dashboard']);
     }
     else
     {

@@ -5,6 +5,8 @@ import { ApiClient } from 'src/app/ApiClient';
 import * as L from 'leaflet';
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { Router } from '@angular/router';
+import { PdfService } from '../services/pdf.service';
 
 @Component({
   selector: 'app-location',
@@ -29,7 +31,7 @@ export class LocationComponent implements OnInit {
 
   map : any;
 
-  constructor(private fb : FormBuilder, private apiClient : ApiClient) {}
+  constructor(private fb : FormBuilder, private apiClient : ApiClient, private router : Router, private pdfservice : PdfService) {}
 
   ngOnInit(): void {
     debugger
@@ -114,8 +116,10 @@ export class LocationComponent implements OnInit {
   }
 
   exportPdf() {
-    const doc = new jsPDF('p', 'pt');
-    (doc as any).autoTable(this.exportColumns, this.location);
+    this.pdfservice.psdSetData(this.location, this.exportColumns);
+    this.router.navigate(['/uikit/pdf']);
+    // const doc = new jsPDF('p', 'pt');
+    // (doc as any).autoTable(this.exportColumns, this.location);
     
     // const pdfData = doc.output('datauristring');
     
@@ -124,11 +128,11 @@ export class LocationComponent implements OnInit {
     // newTab?.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe');
     // newTab?.document.close();
 
-    const pdfData = doc.output('bloburl');
-    const newTab = window.open(pdfData);
-    newTab?.document.open();
-    newTab?.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe');
-    newTab?.document.close();
+    // const pdfData = doc.output('bloburl');
+    // const newTab = window.open(pdfData);
+    // newTab?.document.open();
+    // newTab?.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe');
+    // newTab?.document.close();
   }
   
 }

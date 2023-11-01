@@ -4,6 +4,11 @@ import { AuthGuard } from './guard/auth.guard';
 
 const routes: Routes = [
   { 
+    path: 'dashboard', 
+    data: { breadcrumb: 'Dashboard' }, 
+    loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+  },
+  { 
     path: 'login', 
     data: { breadcrumb: 'Login' }, 
     loadChildren: () => import('./login/login.module').then(m => m.LoginModule)
@@ -62,6 +67,11 @@ const routes: Routes = [
     path: 'visitreminder', 
     data: { breadcrumb: 'VisitReminder' }, 
     loadChildren: () => import('./visitreminder/visitreminder.module').then(m => m.VisitreminderModule),canActivate:[AuthGuard] 
+  },
+  { 
+    path: 'pdf', 
+    data: { breadcrumb: 'PDF' }, 
+    loadChildren: () => import('./pdf/pdf.module').then(m => m.PdfModule),canActivate:[AuthGuard] 
   },
 ];
 
